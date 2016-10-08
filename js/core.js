@@ -448,7 +448,7 @@ interface.compose = function(data)
 	}
 	else if (data.element == "footer")
 	{
-		elementHtml += "<div style=\"display:inline-block\">Hackathon Carrefour by BeMyApp 2016 &copy; </div><div style=\"display:inline-block\" onclick=\"interface.customizeData({option:'wildcard'})\"> From Scratch @48hours !</div>";
+		elementHtml += "<div style=\"display:inline-block\">Hackathon Carrefour by BeMyApp 2016 &copy; </div><div style=\"display:inline-block\"> From Scratch @48hours !</div>";
 	}
 	return elementHtml;
 }
