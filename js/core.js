@@ -307,23 +307,15 @@ interface.compose = function(data)
 			elementHtml += interface.pageTitle({title:'On Road'});
 			elementHtml += "<div id=\"main-content\">";
 				elementHtml += "<div id=\"welcome\">Welcome on Synchrocity</div>";
-			elementHtml += "<div class=\"travel-entry\">I have to travel !</div>";
-			elementHtml += "<div class=\"travel-from\">From This Point : </div>";
-			elementHtml += "<div class=\"travel-to\">To This Point : </div>";
-			elementHtml += "<div class=\"travel-at\">At : </div>";
-			elementHtml += "<div class=\"travel-find\">Find Me how to ride</div>";
-			elementHtml += "<select>";
-			for (var k = 0; memory.ratp.elements[k]; k++)
-			{
-				if (typeof memory.ratp.elements[k].tags !== "undefined" && typeof memory.ratp.elements[k].tags.name !== "undefined")
-					var metroName = memory.ratp.elements[k].tags.name;
-				else
-					metroName = "N/A";
-				elementHtml += "<option value=\"\">#" + k + " -> " + metroName + "(lat:" + memory.ratp.elements[k].lat + ",lon:" + memory.ratp.elements[k].lon + ")</option>";
-			}
-			elementHtml += "</select>";
-
+				elementHtml += "<div id=\"selectRendezVous\" class=\"travel-entry\">Select a Rendez-Vous</div>";
+				elementHtml += "<select onchange=\"interface.navigate({'page':'viewRendezVous'})\">";
+				for (var k = 0; memory.profile.calendar[k]; k++)
+				{
+					elementHtml += "<option value=\"\">#" + (k + 1) + " -> " + memory.profile.calendar[k].title + "</option>";
+				}
+				elementHtml += "</select>";
 			elementHtml += "</div>";
+			elementHtml += "<div id=\"buttonCreateRendezVous\" class=\"travel-entry\" onclick=\"interface.navigate({'page':'createRendezVous'})\">Or create one</div>";
 		}
 		if (interface.info.currentPage == "result")
 		{
@@ -331,6 +323,39 @@ interface.compose = function(data)
 			elementHtml += "<div id=\"main-content\">";
 				elementHtml += "<div class=\"result-announce\">SynchroCity has found this for you</div>";
 				elementHtml += "<div class=\"result-announce\">This ride :</div>";
+				elementHtml += "</div>";
+			elementHtml += "</div>";
+		}
+		else if (interface.info.currentPage == "viewRendezVous")
+		{
+			elementHtml += interface.pageTitle({title:'View a Rendez-Vous'});
+			elementHtml += "<div id=\"main-content\">";
+				elementHtml += "<div class=\"result-announce\">View a Rendez-Vous Meeting</div>";
+				//elementHtml += "<div class=\"result-announce\">Indicate an adress and time of your Rendez-Vous</div>";
+				//elementHtml += "<div class=\"result-announce\">Start from GPS coordinates or adress</div>";
+				elementHtml += "<div class=\"travel-entry\" onclick=\"interface.navigate({'page':'choosePreferedTravelMode'})\">Select Travel Mode for this Rendez-Vous</div>";
+				elementHtml += "</div>";
+			elementHtml += "</div>";
+		}
+		else if (interface.info.currentPage == "createRendezVous")
+		{
+			elementHtml += interface.pageTitle({title:'Create a Rendez-Vous'});
+			elementHtml += "<div id=\"main-content\">";
+				elementHtml += "<div class=\"result-announce\">Create a Rendez-Vous Meeting</div>";
+				elementHtml += "<div class=\"result-announce\">Indicate an adress and time of your Rendez-Vous</div>";
+				elementHtml += "<div class=\"result-announce\">Start from GPS coordinates or adress</div>";
+				elementHtml += "<div class=\"travel-entry\" onclick=\"interface.navigate({'page':'viewRendezVous'})\">Or create one</div>";
+				elementHtml += "</div>";
+			elementHtml += "</div>";
+		}
+		else if (interface.info.currentPage == "choosePreferedTravelMode")
+		{
+			elementHtml += interface.pageTitle({title:'Choose Prefered Travel Mode'});
+			elementHtml += "<div id=\"main-content\">";
+				elementHtml += "<div class=\"result-announce\" onclick=\"interface.navigate({'page':'result'})\">Choose Train/Rail</div>";
+				elementHtml += "<div class=\"result-announce\" onclick=\"interface.navigate({'page':'result'})\">Choose Bus/Tram</div>";
+				elementHtml += "<div class=\"result-announce\" onclick=\"interface.navigate({'page':'result'})\">Choose Car Vehicule</div>";
+				elementHtml += "<div class=\"result-announce\" onclick=\"interface.navigate({'page':'result'})\">Choose Bicycle</div>";
 				elementHtml += "</div>";
 			elementHtml += "</div>";
 		}
@@ -408,7 +433,7 @@ interface.compose = function(data)
 				},
 				{
 					name:"DESBROSSES Elisa",
-					phone:"???",
+					phone:"06 58 26 66 02",
 					email:"elisadesbrosses@gmail.com",
 					linkedin:"???",
 					skill:"Graphistes"
@@ -425,7 +450,7 @@ interface.compose = function(data)
 					phone:"???",
 					email:"manuelpradal@openfleet.com",
 					linkedin:"???",
-					skill:"???"
+					skill:"Back End"
 				}
 			];
 			for (var deusexmachina = 0; participants[deusexmachina]; deusexmachina++)
@@ -525,8 +550,8 @@ interface.construct = function()
 
 	// loading data first
 
-	$.getJSON("json/ratp.json", function(json){
-    	memory.ratp = json;
+	$.getJSON("json/formatType.json", function(json){
+    	memory = json;
     	console.log(memory);
 	
 

@@ -459,6 +459,43 @@ input[type="checkbox"] {
     margin-bottom: 12px;
 }
 
+#welcome {
+    font-size: 1.9em;
+    font-style: italic;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.travel-entry {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#buttonCreateRendezVous {
+    border: solid 1px #ccc;
+    width: 200px;
+    margin: 70px auto;
+    border-radius: 15px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    font-size: 1.7em;
+    background: rgba(171, 0, 48, 0.5);
+    color: white;
+}
+
+#selectRendezVous {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    color: rgba(171, 0, 48, 0.5);
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+select {
+    font-size: 1.8em;
+}
+
 /*** Effects ***/
 
 .blurred {
