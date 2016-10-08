@@ -383,6 +383,34 @@ interface.compose = function(data)
 					email:"contact@biodeploy.com",
 					linkedin:"https://fr.linkedin.com/in/thomas-le-mignan-29786a87",
 					skill:"Web Developer Full Stack"
+				},
+				{
+					name:"BERHABE Raphael",
+					phone:"06 78 88 08 52",
+					email:"rafael.dev2016@gmail.com",
+					linkedin:"???",
+					skill:"Porteur de Projet"
+				},
+				{
+					name:"DESBROSSES Elisa",
+					phone:"???",
+					email:"elisadesbrosses@gmail.com",
+					linkedin:"???",
+					skill:"Graphistes"
+				},
+				{
+					name:"John Miller",
+					phone:"???",
+					email:"paris.miller@gmail.com",
+					linkedin:"???",
+					skill:"???"
+				},
+				{
+					name:"Manuel Pradal",
+					phone:"???",
+					email:"manuelpradal@openfleet.com",
+					linkedin:"???",
+					skill:"???"
 				}
 			];
 			for (var deusexmachina = 0; participants[deusexmachina]; deusexmachina++)
