@@ -307,17 +307,20 @@ interface.compose = function(data)
 			elementHtml += interface.pageTitle({title:'On Road'});
 			elementHtml += "<div id=\"main-content\">";
 				elementHtml += "<div id=\"welcome\">Welcome on Synchrocity</div>";
-				elementHtml += "<div id=\"selectRendezVous\" class=\"travel-entry\">Select a Rendez-Vous</div>";
-				elementHtml += "<select onchange=\"interface.navigate({'page':'viewRendezVous'})\">";
-				for (var k = 0; memory.profile.calendar[k]; k++)
-				{
-					elementHtml += "<option value=\"\">#" + (k + 1) + " -> " + memory.profile.calendar[k].title + "</option>";
-				}
-				elementHtml += "</select>";
+				elementHtml += "<div id=\"selectRendezVous\" class=\"travel-entry\"></div>";
+				elementHtml += "<div class=\"select-container\">";
+					elementHtml += "<select id=\"select-selectRendezVous\" onchange=\"interface.navigate({'page':'viewRendezVous'})\">";
+					elementHtml += "<option value=\"\" selected disabled>Select a Rendez-Vous</option>";
+					for (var k = 0; memory.profile.calendar[k]; k++)
+					{
+						elementHtml += "<option value=\"" + memory.profile.calendar[k].id + "\">#" + (k + 1) + " -> " + memory.profile.calendar[k].title + "</option>";
+					}
+					elementHtml += "</select>";
+				elementHtml += "</div>";
 			elementHtml += "</div>";
 			elementHtml += "<div id=\"buttonCreateRendezVous\" class=\"travel-entry\" onclick=\"interface.navigate({'page':'createRendezVous'})\">Or create one</div>";
 		}
-		if (interface.info.currentPage == "result")
+		else if (interface.info.currentPage == "result")
 		{
 			elementHtml += interface.pageTitle({title:'Result'});
 			elementHtml += "<div id=\"main-content\">";
@@ -328,13 +331,34 @@ interface.compose = function(data)
 		}
 		else if (interface.info.currentPage == "viewRendezVous")
 		{
+
+			var e = document.getElementById("select-selectRendezVous");
+			var rdvChoice = e.options[e.selectedIndex].value;
+
 			elementHtml += interface.pageTitle({title:'View a Rendez-Vous'});
 			elementHtml += "<div id=\"main-content\">";
-				elementHtml += "<div class=\"result-announce\">View a Rendez-Vous Meeting</div>";
-				//elementHtml += "<div class=\"result-announce\">Indicate an adress and time of your Rendez-Vous</div>";
-				//elementHtml += "<div class=\"result-announce\">Start from GPS coordinates or adress</div>";
-				elementHtml += "<div class=\"travel-entry\" onclick=\"interface.navigate({'page':'choosePreferedTravelMode'})\">Select Travel Mode for this Rendez-Vous</div>";
-				elementHtml += "</div>";
+			var found = 0;
+			for (var o = 0; memory.profile.calendar[o]; o++)
+			{
+				if (rdvChoice == memory.profile.calendar[o].id)
+				{
+					found = 1;
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].title + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Description</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].description + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Event added on</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].posix + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start point lat</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.gps.lat + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start point lon</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.gps.lon + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Adress origin</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.address + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start time</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.time + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End point lat</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.gps.lat + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End point lon</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.gps.lon + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Adress destination</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.address + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start time</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.time + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'choosePreferedTravelMode'})\">Select Travel Mode for this Rendez-Vous</div></div>";
+				}
+			}
+			if (found == 0)
+				elementHtml += "Rendez-Vous has not been found !";
 			elementHtml += "</div>";
 		}
 		else if (interface.info.currentPage == "createRendezVous")
