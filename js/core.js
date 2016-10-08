@@ -278,6 +278,40 @@ interface.customizeData = function(data)
 	}
 }
 
+function initMap()
+{
+  var directionsDisplay = new google.maps.DirectionsRenderer;
+  var directionsService = new google.maps.DirectionsService;
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 14,
+    center: {lat: 37.77, lng: -122.447}
+  });
+  directionsDisplay.setMap(map);
+
+  calculateAndDisplayRoute(directionsService, directionsDisplay);
+  document.getElementById('mode').addEventListener('change', function() {
+    calculateAndDisplayRoute(directionsService, directionsDisplay);
+  });
+}
+
+function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+  var selectedMode = document.getElementById('mode').value;
+  directionsService.route({
+    origin: {lat: 37.77, lng: -122.447},  // Haight.
+    destination: {lat: 37.768, lng: -122.511},  // Ocean Beach.
+    // Note that Javascript allows us to access the constant
+    // using square brackets and a string value as its
+    // "property."
+    travelMode: google.maps.TravelMode[selectedMode]
+  }, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+    } else {
+      window.alert('Directions request failed due to ' + status);
+    }
+  });
+}
+
 interface.compose = function(data)
 {
 	var elementHtml = "";
@@ -394,7 +428,17 @@ interface.compose = function(data)
 				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\">Bus/Tram " + bestChoices.bus + "%</div>";
 				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\">Car Vehicule " + bestChoices.car + "%</div>";
 				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\">Bicycle " + bestChoices.bicycle + "%</div>";
-				elementHtml += "<div id=\"map\"></div>";
+				elementHtml += "<div id=\"floating-panel\">";
+			    	elementHtml += "<b>Mode of Travel: </b>";
+				    elementHtml += "<select id=\"mode\">";
+					    elementHtml += "<option value=\"DRIVING\">Driving</option>";
+					    elementHtml += "<option value=\"WALKING\">Walking</option>";
+					    elementHtml += "<option value=\"BICYCLING\">Bicycling</option>";
+					    elementHtml += "<option value=\"TRANSIT\">Transit</option>";
+				    elementHtml += "</select>";
+			    elementHtml += "</div>";
+			    elementHtml += "<div id=\"map\"></div>";
+			    setTimeout(function(){initMap();}, 50)
 				elementHtml += "</div>";
 			elementHtml += "</div>";
 		}
