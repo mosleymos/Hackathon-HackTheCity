@@ -331,7 +331,6 @@ interface.compose = function(data)
 		}
 		else if (interface.info.currentPage == "viewRendezVous")
 		{
-
 			var e = document.getElementById("select-selectRendezVous");
 			var rdvChoice = e.options[e.selectedIndex].value;
 
@@ -342,6 +341,7 @@ interface.compose = function(data)
 			{
 				if (rdvChoice == memory.profile.calendar[o].id)
 				{
+					memory.selectedCalendar = memory.profile.calendar[o];
 					found = 1;
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].title + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Description</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].description + "</div></div>";
@@ -353,7 +353,7 @@ interface.compose = function(data)
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End point lat</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.gps.lat + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End point lon</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.gps.lon + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Adress destination</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.address + "</div></div>";
-					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start time</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.time + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End time</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.time + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'choosePreferedTravelMode'})\">Select Travel Mode for this Rendez-Vous</div></div>";
 				}
 			}
@@ -365,21 +365,36 @@ interface.compose = function(data)
 		{
 			elementHtml += interface.pageTitle({title:'Create a Rendez-Vous'});
 			elementHtml += "<div id=\"main-content\">";
-				elementHtml += "<div class=\"result-announce\">Create a Rendez-Vous Meeting</div>";
-				elementHtml += "<div class=\"result-announce\">Indicate an adress and time of your Rendez-Vous</div>";
-				elementHtml += "<div class=\"result-announce\">Start from GPS coordinates or adress</div>";
-				elementHtml += "<div class=\"travel-entry\" onclick=\"interface.navigate({'page':'viewRendezVous'})\">Or create one</div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].title + "</div></div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Description</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].description + "</div></div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Event added on</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].posix + "</div></div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start point lat</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.gps.lat + "</div></div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start point lon</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.gps.lon + "</div></div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Adress origin</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.address + "</div></div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start time</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.time + "</div></div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End point lat</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.gps.lat + "</div></div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End point lon</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.gps.lon + "</div></div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Adress destination</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.address + "</div></div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End time</div><div class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.time + "</div></div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'choosePreferedTravelMode'})\">Select Travel Mode for this Rendez-Vous</div></div>";
 				elementHtml += "</div>";
 			elementHtml += "</div>";
 		}
 		else if (interface.info.currentPage == "choosePreferedTravelMode")
 		{
+			// generate probability of best choice
+
+			var bestChoices = {train:25,bus:25,car:25,bicycle:25} // Send on function to make probability.
+			//define distance
+
 			elementHtml += interface.pageTitle({title:'Choose Prefered Travel Mode'});
 			elementHtml += "<div id=\"main-content\">";
-				elementHtml += "<div class=\"result-announce\" onclick=\"interface.navigate({'page':'result'})\">Choose Train/Rail</div>";
-				elementHtml += "<div class=\"result-announce\" onclick=\"interface.navigate({'page':'result'})\">Choose Bus/Tram</div>";
-				elementHtml += "<div class=\"result-announce\" onclick=\"interface.navigate({'page':'result'})\">Choose Car Vehicule</div>";
-				elementHtml += "<div class=\"result-announce\" onclick=\"interface.navigate({'page':'result'})\">Choose Bicycle</div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\">" + memory.selectedCalendar.title + "</div></div>";
+				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\">Train/Rail " + bestChoices.train + "%</div>";
+				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\">Bus/Tram " + bestChoices.bus + "%</div>";
+				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\">Car Vehicule " + bestChoices.car + "%</div>";
+				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\">Bicycle " + bestChoices.bicycle + "%</div>";
+				elementHtml += "<div id=\"map\"></div>";
 				elementHtml += "</div>";
 			elementHtml += "</div>";
 		}
