@@ -1,12 +1,12 @@
 /* Fonts */
 @font-face {
     font-family: 'Calibri';
-    src: url('font/Calibri.eot');
-    src: url('font/Calibri.eot') format('embedded-opentype'),
-         url('font/Calibri.woff2') format('woff2'),
-         url('font/Calibri.woff') format('woff'),
-         url('font/Calibri.ttf') format('truetype'),
-         url('font/Calibri.svg#Calibri') format('svg');
+    src: url('/font/Calibri.eot');
+    src: url('/font/Calibri.eot') format('embedded-opentype'),
+         url('/font/Calibri.woff2') format('woff2'),
+         url('/font/Calibri.woff') format('woff'),
+         url('/font/Calibri.ttf') format('truetype'),
+         url('/font/Calibri.svg#Calibri') format('svg');
 }
 
 
