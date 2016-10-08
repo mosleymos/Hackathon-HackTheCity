@@ -544,6 +544,7 @@ select {
 #map {
     height: 100%;
 }
+
 #floating-panel {
     position: absolute;
     top: 10px;
@@ -556,6 +557,11 @@ select {
     font-family: 'Roboto','sans-serif';
     line-height: 30px;
     padding-left: 10px;
+}
+
+.inputClassic {
+    width: 85%;
+    font-size: 0.8em;
 }
 
 /*** Effects ***/
