@@ -1,0 +1,30 @@
+{
+	"profile": {
+		"username": "Henri",
+		"birthdate": "20-10-1985",
+		"sexe": "male",
+		"avatar": "avatar.jpg",
+		"lists": [{
+			"dateCreation": "23-09-2016",
+			"shared": "0",
+			"price": 4.77,
+			"products": [{
+				"id": "044016223",
+				"name": "Haricots Verts",
+				"price": 0.98,
+				"img": "haricots.jpg"
+			}, {
+				"id": "049849681",
+				"name": "Shampoing l'Oréal",
+				"price": 2.48,
+				"img": "shampoing.jpg"
+			}, {
+				"id": "098465665",
+				"name": "Café Décaféiné",
+				"price": 2.31,
+				"img": "cafe.jpg"
+			}]
+		}]
+	}
+
+}
