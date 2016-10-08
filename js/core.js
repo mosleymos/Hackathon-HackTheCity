@@ -304,19 +304,34 @@ interface.compose = function(data)
 	{
 		if (interface.info.currentPage == "home")
 		{
-			elementHtml += interface.pageTitle({title:'Home'});
+			elementHtml += interface.pageTitle({title:'On Road'});
 			elementHtml += "<div id=\"main-content\">";
-				elementHtml += "Welcome on Synchrocity";
+				elementHtml += "<div id=\"welcome\">Welcome on Synchrocity</div>";
+			elementHtml += "<div class=\"travel-entry\">I have to travel !</div>";
+			elementHtml += "<div class=\"travel-from\">From This Point : </div>";
+			elementHtml += "<div class=\"travel-to\">To This Point : </div>";
+			elementHtml += "<div class=\"travel-at\">At : </div>";
+			elementHtml += "<div class=\"travel-find\">Find Me how to ride</div>";
+			elementHtml += "<select>";
+			for (var k = 0; memory.ratp.elements[k]; k++)
+			{
+				if (typeof memory.ratp.elements[k].tags !== "undefined" && typeof memory.ratp.elements[k].tags.name !== "undefined")
+					var metroName = memory.ratp.elements[k].tags.name;
+				else
+					metroName = "N/A";
+				elementHtml += "<option value=\"\">#" + k + " -> " + metroName + "(lat:" + memory.ratp.elements[k].lat + ",lon:" + memory.ratp.elements[k].lon + ")</option>";
+			}
+			elementHtml += "</select>";
+
 			elementHtml += "</div>";
 		}
-		if (interface.info.currentPage == "add")
+		if (interface.info.currentPage == "result")
 		{
-			elementHtml += interface.pageTitle({title:'Add a reference'});
+			elementHtml += interface.pageTitle({title:'Result'});
 			elementHtml += "<div id=\"main-content\">";
-				elementHtml += "Add a Product";
-					// ajouter un produit.
-				elementHtml += "Add a Category";
-					// ajouter une catégorie.
+				elementHtml += "<div class=\"result-announce\">SynchroCity has found this for you</div>";
+				elementHtml += "<div class=\"result-announce\">This ride :</div>";
+				elementHtml += "</div>";
 			elementHtml += "</div>";
 		}
 		else if (interface.info.currentPage == "settings")
@@ -503,8 +518,18 @@ interface.preconstruct = function()
 	interface.ask();
 }
 
+var memory = {};
+
 interface.construct = function()
 {
+
+	// loading data first
+
+	$.getJSON("json/ratp.json", function(json){
+    	memory.ratp = json;
+    	console.log(memory);
+	
+
 	var menu = document.createElement("div");
 	menu.id = "menu";
 	menu.style.display = "none";
@@ -519,6 +544,9 @@ interface.construct = function()
 	footer.id = "footer";
 	document.body.appendChild(footer);
 	interface.render();
+
+
+	});
 }
 
 interface.data = {
