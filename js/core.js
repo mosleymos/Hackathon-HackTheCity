@@ -322,6 +322,17 @@ interface.message = function(data)
 		document.getElementById('displayMessage').innerHTML = "";
 }
 
+function randomString(limit)
+{
+	var List = new Array("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9");
+	var Chain ='';
+	for(i = 0; i < nbcar; i++)
+	{
+		Chain = Chain + List[Math.floor(Math.random()*List.length)];
+	}
+	return Chain;
+}
+
 interface.updateCalendar = function(data)
 {
 	result = {};
@@ -339,8 +350,9 @@ interface.updateCalendar = function(data)
 	result.destination.time = document.getElementById("destination-time").value;
 	if (data.option == "add")
 	{
-		result.posix = 61565615; //générer time
-		result.id = "genererunid"; //générer Id
+		var d = new Date();
+		result.posix = d.getTime();
+		result.id = randomString(15);
 		memory.profile.calendar.push(result);
 	}
 	else if (data.option == "update")
@@ -424,7 +436,7 @@ interface.compose = function(data)
 			if (e != null)
 				var rdvChoice = e.options[e.selectedIndex].value;
 			else
-				var rdvChoice = memory.profile.calendar.id;
+				var rdvChoice = memory.selectedCalendar.id;
 			elementHtml += interface.pageTitle({title:'View a Rendez-Vous'});
 			elementHtml += "<div id=\"main-content\">";
 			var found = 0;
@@ -685,7 +697,7 @@ interface.compose = function(data)
 	}
 	else if (data.element == "footer")
 	{
-		elementHtml += "<div style=\"display:inline-block\">Hackathon Carrefour by BeMyApp 2016 &copy; </div><div style=\"display:inline-block\"> From Scratch @48hours !</div>";
+		elementHtml += "<div style=\"display:inline-block\">Hackathon HackTheCity by BeMyApp 2016 &copy; </div><div style=\"display:inline-block\"> From Scratch @48hours !</div>";
 	}
 	return elementHtml;
 }
