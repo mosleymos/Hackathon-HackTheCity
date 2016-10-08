@@ -152,7 +152,7 @@ interface.productsDisplay = function(data)
 
 	//for (var i = 0; interface.data.profile.lists[i]; i++)
 	//{
-		
+		/*
 		for (var z = 0; interface.json.productDescription[z]; z++)
 		{
 			if (interface.productsDisplayCheckDouble(interface.json.productDescription[z], productsList) == 0)
@@ -230,6 +230,7 @@ console.log(productsList);
 	if (interface.customozationData.autorizedCostLimit == 0)
 		productsListHtml += "<br><br><br><div class=\"home-go\" onclick=\"interface.navigate({'page':'page-demo'})\">Go get it !</div>";
 	return productsListHtml;
+*/
 }
 
 interface.customozationData = {
@@ -293,7 +294,7 @@ interface.compose = function(data)
 	else if (data.element == "menu-bar")
 	{
 		elementHtml += "<div class=\"left\">";
-			elementHtml += "<div id=\"logo\" onclick=\"interface.navigate({'page':'home'})\"></div>";
+			elementHtml += "<div id=\"logo\" onclick=\"interface.navigate({'page':'home'})\">SynchroCity</div>";
 		elementHtml += "</div>";
 		elementHtml += "<div class=\"right\">";
 			elementHtml += "<div id=\"menu-caller\" onclick=\"interface.menu()\"></div>";
@@ -305,7 +306,7 @@ interface.compose = function(data)
 		{
 			elementHtml += interface.pageTitle({title:'Home'});
 			elementHtml += "<div id=\"main-content\">";
-				elementHtml += interface.productsDisplay({option:'probability'});
+				elementHtml += "Welcome on Synchrocity";
 			elementHtml += "</div>";
 		}
 		if (interface.info.currentPage == "add")
@@ -382,48 +383,6 @@ interface.compose = function(data)
 					email:"contact@biodeploy.com",
 					linkedin:"https://fr.linkedin.com/in/thomas-le-mignan-29786a87",
 					skill:"Web Developer Full Stack"
-				},
-				{
-					name:"KAYONGA Earvin",
-					phone:"06 41 89 20 12",
-					email:"earvin@earvinkayonga.com",
-					linkedin:"https://fr.linkedin.com/in/earvinkayonga",
-					skill:"Web Dev Full Stack"
-				},
-				{
-					name:"OUSMANE BAWA GAOH Moustapha",
-					phone:"07 55 00 31 40",
-					email:"gaohmoustapha@gmail.com",
-					linkedin:"https://fr.linkedin.com/in/gaohmoustapha ",
-					skill:"DataScientist"
-				},
-				{
-					name:"HAIDARA PIERRE",
-					phone:"0615536978",
-					email:"pehaidara@gmail.com",
-					linkedin:"https://fr.linkedin.com/in/pierre-elias-haidara-72379564",
-					skill:"Data Scientist"
-				},
-				{
-					name:"BOURSIER Bertrand",
-					phone:"06 13 17 34 52",
-					email:"bertrand.boursier@gmail.com",
-					linkedin:"https://www.linkedin.com/in/bertrand-boursier-2107922",
-					skill:"Ruby-on-Rails"
-				},
-				{
-					name:"Cédric Faucheux",
-					phone:"06.14.44.62.16",
-					email:"cedric.faucheux@untienots.com",
-					linkedin:"https://www.linkedin.com/in/",
-					skill:"Data Scientist"
-				},
-				{
-					name:"Zyed JAMOUSSI",
-					phone:"0609861069",
-					email:"zyed@untienots.com",
-					linkedin:"https://www.linkedin.com/in/zyedjamoussi?trk=nav_responsive_tab_profile_pic",
-					skill:"Project Submissioner"
 				}
 			];
 			for (var deusexmachina = 0; participants[deusexmachina]; deusexmachina++)
@@ -534,60 +493,9 @@ interface.construct = function()
 	interface.render();
 }
 
-
-
 interface.data = {
 	"statistiques":{},
 	"category":[],
-	"products":[{
-		"id": "044016223",
-		"name": "Haricots Verts",
-		"price": 0.98,
-		"img": "haricots.jpg",
-		"probability": 88,
-		"promo": 1,
-		"category":""
-	}, {
-		"id": "049849681",
-		"name": "Shampoing l'Oréal",
-		"price": 2.48,
-		"img": "shampoing.jpg",
-		"probability": 69,
-		"promo": 1,
-		"category":""
-	}, {
-		"id": "098465665",
-		"name": "Café Décaféiné",
-		"price": 2.31,
-		"img": "cafe.jpg",
-		"probability": 48,
-		"promo": 1,
-		"category":""
-	}, {
-		"id": "09846566578",
-		"name": "Café Caféiné",
-		"price": 2.31,
-		"img": "cafe.jpg",
-		"probability": 18,
-		"promo": 1,
-		"category":""
-	}, {
-		"id": "09846566755",
-		"name": "Snickers",
-		"price": 12.31,
-		"img": "cafe.jpg",
-		"probability": 98,
-		"promo": 1,
-		"category":""
-	}, {
-		"id": "09846565865",
-		"name": "Brochettes de volaille",
-		"price": 5.87,
-		"img": "cafe.jpg",
-		"probability": 28,
-		"promo": 1,
-		"category":""
-	}],
 	"profile": {
 		"firstname": "Henri",
 		"lastname": "Lumière",
@@ -599,62 +507,7 @@ interface.data = {
 			"r": 100,
 			"g": 100,
 			"b": 0
-		},
-		"costLimitList":20,
-		"lists": [{
-			"dateCreation": "23-09-2016",
-			"shared": "0",
-			"price": 4.77,
-			"products": [{
-				"id": "044016223",
-				"name": "Haricots Verts",
-				"price": 0.98,
-				"img": "haricots.jpg",
-				"probability": 88,
-				"promo": 1,
-				"category":""
-			}, {
-				"id": "049849681",
-				"name": "Shampoing l'Oréal",
-				"price": 2.48,
-				"img": "shampoing.jpg",
-				"probability": 69,
-				"promo": 1,
-				"category":""
-			}, {
-				"id": "098465665",
-				"name": "Café Décaféiné",
-				"price": 2.31,
-				"img": "cafe.jpg",
-				"probability": 48,
-				"promo": 1,
-				"category":""
-			}, {
-				"id": "09846566578",
-				"name": "Café Caféiné",
-				"price": 2.31,
-				"img": "cafe.jpg",
-				"probability": 18,
-				"promo": 1,
-				"category":""
-			}, {
-				"id": "09846566755",
-				"name": "Snickers",
-				"price": 12.31,
-				"img": "cafe.jpg",
-				"probability": 98,
-				"promo": 1,
-				"category":""
-			}, {
-				"id": "09846565865",
-				"name": "Brochettes de volaille",
-				"price": 5.87,
-				"img": "cafe.jpg",
-				"probability": 28,
-				"promo": 1,
-				"category":""
-			}]
-		}]
+		}
 	}
 };
 
