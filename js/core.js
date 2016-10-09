@@ -789,7 +789,7 @@ interface.preconstruct = function()
 	interface.ask();
 }
 
-var memory = {};
+var memory = {transports:{}};
 
 interface.construct = function()
 {
@@ -801,21 +801,32 @@ interface.construct = function()
     	console.log(memory);
 	
 
-	var menu = document.createElement("div");
-	menu.id = "menu";
-	menu.style.display = "none";
-	document.body.appendChild(menu);
-	var menuBar = document.createElement("div");
-	menuBar.id = "menu-bar";
-	document.body.appendChild(menuBar);
-	var mainView = document.createElement("div");
-	mainView.id = "mainView";
-	document.body.appendChild(mainView);
-	var footer = document.createElement("div");
-	footer.id = "footer";
-	document.body.appendChild(footer);
-	interface.render();
+		var menu = document.createElement("div");
+		menu.id = "menu";
+		menu.style.display = "none";
+		document.body.appendChild(menu);
+		var menuBar = document.createElement("div");
+		menuBar.id = "menu-bar";
+		document.body.appendChild(menuBar);
+		var mainView = document.createElement("div");
+		mainView.id = "mainView";
+		document.body.appendChild(mainView);
+		var footer = document.createElement("div");
+		footer.id = "footer";
+		document.body.appendChild(footer);
+		interface.render();
 
+		$.getJSON("json/velib.json", function(json){
+	    	memory.transports.velib = json;
+	    });
+
+	    $.getJSON("json/ratp.json", function(json){
+	    	memory.transports.ratp = json;
+	    });
+
+	   	$.getJSON("json/autolib.json", function(json){
+	    	memory.transports.autolib = json;
+	    });
 
 	});
 }
