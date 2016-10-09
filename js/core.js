@@ -444,6 +444,16 @@ interface.geocode = function(data)
 	}
 }
 
+endProcess = {};
+endProcess.transport = "";
+
+
+interface.endProcess = function(data)
+{
+	endProcess.transport = data.transport;
+	interface.navigate({'page':'endProcess'});
+}
+
 interface.date = function(posix)
 {
 	var date = new Date(posix * 1000);
@@ -595,10 +605,10 @@ interface.compose = function(data)
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\">" + memory.selectedCalendar.title + "</div></div>";
 				
 				elementHtml += "<div style=\"text-align:center;\">";
-				elementHtml += "<div class=\"buttonMap\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-rail.png\" /></div>";
-				elementHtml += "<div class=\"buttonMap\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-bus.png\" /></div>";
-				elementHtml += "<div class=\"buttonMap\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-car.png\" /></div>";
-				elementHtml += "<div class=\"buttonMap\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-bicycle.png\" /></div>";
+				elementHtml += "<div class=\"buttonMap\" onclick=\"interface.endProcess({'transport':'rail'})\"><img src=\"img/icon-rail.png\" /></div>";
+				elementHtml += "<div class=\"buttonMap\" onclick=\"interface.endProcess({'transport':'bus'})\"><img src=\"img/icon-bus.png\" /></div>";
+				elementHtml += "<div class=\"buttonMap\" onclick=\"interface.endProcess({'transport':'car'})\"><img src=\"img/icon-car.png\" /></div>";
+				elementHtml += "<div class=\"buttonMap\" onclick=\"interface.endProcess({'transport':'bicycle'})\"><img src=\"img/icon-bicycle.png\" /></div>";
 				elementHtml += "</div>";
 				elementHtml += "<div id=\"floating-panel\">";
 			    	elementHtml += "<b>Mode of Travel: </b>";
@@ -613,6 +623,89 @@ interface.compose = function(data)
 			    setTimeout(function(){initMap();}, 50)
 				elementHtml += "</div>";
 			elementHtml += "</div>";
+		}
+		else if (interface.info.currentPage == "paymentok")
+		{
+			// generate probability of best choice
+
+			var bestChoices = {train:25,bus:25,car:25,bicycle:25} // Send on function to make probability.
+			//define distance
+
+			elementHtml += interface.pageTitle({title:'Choose Prefered Travel Mode'});
+			elementHtml += "<div id=\"main-content\">";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\">" + memory.selectedCalendar.title + "</div></div>";
+				
+				elementHtml += "<div style=\"text-align:center;\">";
+					elementHtml += "<div class=\"paymentok\">Your Payment has been accepted, thank you.</div>";
+				elementHtml += "</div>";
+			elementHtml += "</div>";
+			//setTimeout(function(){interface.navigate({'page':'home'})}, 5000)
+		}
+		else if (interface.info.currentPage == "endProcess")
+		{
+			elementHtml += interface.pageTitle({title:'We have found a way...'});
+			elementHtml += "<div id=\"main-content\">";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\">" + memory.selectedCalendar.title + "</div></div>";
+			
+				elementHtml += "<div style=\"text-align:center;\">";
+				if (endProcess.transport == "rail")
+				{
+					var res = interface.transports.nearestPointFromMe(3);
+					res = res.ratp;
+					endProcess.cost = "1.6";
+					elementHtml += "<div class=\"buttonMap\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-rail.png\" /></div>";
+				}
+				else if (endProcess.transport == "bus")
+				{
+					endProcess.cost = "1.9";
+					elementHtml += "<div class=\"buttonMap\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-bus.png\" /></div>";
+				}
+				else if (endProcess.transport == "car")
+				{
+					var res = interface.transports.nearestPointFromMe(3);
+					res = res.autolib;
+					endProcess.cost = "3.4";
+					elementHtml += "<div class=\"buttonMap\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-car.png\" /></div>";
+				}
+				else if (endProcess.transport == "bicycle")
+				{
+					var res = interface.transports.nearestPointFromMe(3);
+					res = res.velib;
+					endProcess.cost = "0.1";
+					elementHtml += "<div class=\"buttonMap\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-bicycle.png\" /></div>";
+				}
+				elementHtml += "</div>";
+
+				elementHtml += "<div>You have selected the " + endProcess.transport + " to arrive at destination.</div>";
+				elementHtml += "<div>The cost is of : " + endProcess.cost + "&euro; (euros)</div>";
+				elementHtml += "<div onclick=\"interface.navigate({'page':'paymentok'})\">Ok to approuve payment or Cancel the current operation</div>";
+			
+				
+				if (typeof res != "undefined")
+				{
+					console.log(res);
+					for (var k = 0; res[k]; k++)
+					{
+						elementHtml += "<div class=\"line-possibilities\">";
+						elementHtml += (k + 1) + "Name : " + res[k].name;
+						if (typeof res[k].address != "undefined")
+							elementHtml += "Address : " + res[k].address;
+						if (typeof res[k].city != "undefined")
+							elementHtml += "City : " + res[k].city;
+						if (typeof res[k].type != "undefined")
+							elementHtml += "Type : " + res[k].type;
+						if (typeof res[k].station != "undefined")
+							elementHtml += "Station : " + res[k].station;
+						if (typeof res[k].distance != "undefined")
+							elementHtml += "Distance : " + res[k].distance;
+						if (typeof res[k].lat != "undefined")
+							elementHtml += "Latitude : " + res[k].lat;
+						if (typeof res[k].lon != "undefined")
+							elementHtml += "Longitude : " + res[k].lon;
+						elementHtml += "</div>";
+					}
+				}
+				elementHtml += "</div>";
 		}
 		else if (interface.info.currentPage == "settings")
 		{
