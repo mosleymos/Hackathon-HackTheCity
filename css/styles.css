@@ -556,7 +556,8 @@ select {
 }
 
 .line-possibilities {
-    
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 .paymentok {
