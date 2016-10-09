@@ -587,10 +587,10 @@ interface.compose = function(data)
 			elementHtml += interface.pageTitle({title:'Choose Prefered Travel Mode'});
 			elementHtml += "<div id=\"main-content\">";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\">" + memory.selectedCalendar.title + "</div></div>";
-				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\">Train/Rail " + bestChoices.train + "%</div>";
-				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\">Bus/Tram " + bestChoices.bus + "%</div>";
-				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\">Car Vehicule " + bestChoices.car + "%</div>";
-				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\">Bicycle " + bestChoices.bicycle + "%</div>";
+				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-rail\" /></div>";
+				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-bus\" /></div>";
+				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-car\" /></div>";
+				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-bicycle\" /></div>";
 				elementHtml += "<div id=\"floating-panel\">";
 			    	elementHtml += "<b>Mode of Travel: </b>";
 				    elementHtml += "<select id=\"mode\">";
@@ -682,7 +682,7 @@ interface.compose = function(data)
 					phone:"06 58 26 66 02",
 					email:"elisadesbrosses@gmail.com",
 					linkedin:"???",
-					skill:"Graphistes"
+					skill:"Graphiste"
 				},
 				{
 					name:"John Miller",
@@ -690,13 +690,6 @@ interface.compose = function(data)
 					email:"paris.miller@gmail.com",
 					linkedin:"???",
 					skill:"???"
-				},
-				{
-					name:"Manuel Pradal",
-					phone:"???",
-					email:"manuelpradal@openfleet.com",
-					linkedin:"???",
-					skill:"Back End"
 				}
 			];
 			for (var deusexmachina = 0; participants[deusexmachina]; deusexmachina++)
@@ -789,7 +782,169 @@ interface.preconstruct = function()
 	interface.ask();
 }
 
-var memory = {transports:{}};
+var memory = {};
+var transports = {};
+
+interface.transports = {};
+interface.transports.myGps = {lat:0,lon:0};
+
+interface.transports.initPosition = function()
+{
+	if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(interface.transports.recordPosition);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+interface.transports.recordPosition = function(position)
+{
+    interface.transports.myGps.lat = position.coords.latitude;
+    interface.transports.myGps.lon = position.coords.longitude;
+}
+
+function toRad(Value) 
+{
+   return Value * Math.PI / 180;
+}
+
+interface.transports.distanceBetweenTwoPoints = function(pointOne,pointTwo)
+{
+	var R = 6371; // km
+  	var dLat = toRad(pointTwo.lat - pointOne.lat);
+  	var dLon = toRad(pointTwo.lon - pointOne.lon);
+  	var lat1 = toRad(pointOne.lat);
+  	var lat2 = toRad(pointTwo.lat);
+
+  	var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+  	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  	var d = R * c;
+  	return d;
+}
+
+interface.transports.triage = function(list, order)
+{
+	console.log(list);
+
+	list.sort(function (a, b){
+	    if (a.lat < b.lat)
+	      return 1;
+	    if (a.lat > b.lat)
+	      return -1;
+	    return 0;
+	});
+	list.sort(function (a, b){
+	    if (a.lon < b.lon)
+	      return 1;
+	    if (a.lon > b.lon)
+	      return -1;
+	    return 0;
+	});
+	return list;
+
+	console.log('after',list);
+}
+
+interface.transports.nearestPointFromMe = function(limit)
+{
+	interface.transports.initPosition();
+	var result = {autolib:[], velib:[], ratp:[]};
+	var autolibPreProcessed = []
+	for (var i = 0; transports.autolib[i]; i++)
+	{
+		var res = {lat:0,lon:0};
+		res.lat = transports.autolib[i].lat - interface.transports.myGps.lat;
+		res.lat = (res.lat < 0) ? (res.lat * -1): res.lat;
+		res.lon = transports.autolib[i].lon - interface.transports.myGps.lon;
+		res.lon = (res.lon < 0) ? (res.lon * -1): res.lon;
+		res.id = transports.autolib[i].id;
+
+		autolibPreProcessed.push(res);
+	}
+	autolibPreProcessed = interface.transports.triage(autolibPreProcessed);
+	autolibIdList = [];
+
+	for (var o = 0; autolibPreProcessed[o] && o < limit; o++)
+	{
+		autolibIdList.push(autolibPreProcessed[o].id);
+	}
+	for (var u = 0; autolibIdList[u]; u++)
+	{
+		for (var x = 0;transports.autolib[x]; x++)
+		{
+			if (autolibIdList[u] == transports.autolib[x].id)
+			{
+				transports.autolib[x].distance = interface.transports.distanceBetweenTwoPoints(transports.autolib[x], interface.transports.myGps);
+				result.autolib.push(transports.autolib[x]);
+				break;
+			}
+		}
+	}
+	/*****/
+	var velibPreProcessed = []
+	for (var i = 0; transports.velib[i]; i++)
+	{
+		var res = {lat:0,lon:0};
+		res.lat = transports.velib[i].lat - interface.transports.myGps.lat;
+		res.lat = (res.lat < 0) ? (res.lat * -1): res.lat;
+		res.lon = transports.velib[i].lon - interface.transports.myGps.lon;
+		res.lon = (res.lon < 0) ? (res.lon * -1): res.lon;
+		res.id = transports.velib[i].id;
+
+		velibPreProcessed.push(res);
+	}
+	velibPreProcessed = interface.transports.triage(velibPreProcessed);
+	velibIdList = [];
+	for (var o = 0; velibPreProcessed[o] && o < limit; o++)
+	{
+		velibIdList.push(velibPreProcessed[o].id);
+	}
+	for (var u = 0; velibIdList[u]; u++)
+	{
+		for (var x = 0;transports.velib[x]; x++)
+		{
+			if (velibIdList[u] == transports.velib[x].id)
+			{
+				transports.velib[x].distance = interface.transports.distanceBetweenTwoPoints(transports.velib[x], interface.transports.myGps);
+				result.velib.push(transports.velib[x]);
+				break;
+			}
+		}
+	}
+	/******/
+	var ratpPreProcessed = []
+	for (var i = 0; transports.ratp[i]; i++)
+	{
+		var res = {lat:0,lon:0};
+		res.lat = transports.ratp[i].lat - interface.transports.myGps.lat;
+		res.lat = (res.lat < 0) ? (res.lat * -1): res.lat;
+		res.lon = transports.ratp[i].lon - interface.transports.myGps.lon;
+		res.lon = (res.lon < 0) ? (res.lon * -1): res.lon;
+		res.id = transports.ratp[i].id;
+
+		ratpPreProcessed.push(res);
+	}
+	ratpPreProcessed = interface.transports.triage(ratpPreProcessed);
+	ratpIdList = [];
+	for (var o = 0; ratpPreProcessed[o] && o < limit; o++)
+	{
+		ratpIdList.push(ratpPreProcessed[o].id);
+	}
+	for (var u = 0; ratpIdList[u]; u++)
+	{
+		for (var x = 0;transports.ratp[x]; x++)
+		{
+			if (ratpIdList[u] == transports.ratp[x].id)
+			{
+				transports.ratp[x].distance = interface.transports.distanceBetweenTwoPoints(transports.ratp[x], interface.transports.myGps);
+				result.ratp.push(transports.ratp[x]);
+				break;
+			}
+		}
+	}
+	return result;
+}
 
 interface.construct = function()
 {
@@ -817,15 +972,15 @@ interface.construct = function()
 		interface.render();
 
 		$.getJSON("json/velib.json", function(json){
-	    	memory.transports.velib = json;
+	    	transports.velib = json;
 	    });
 
 	    $.getJSON("json/ratp.json", function(json){
-	    	memory.transports.ratp = json;
+	    	transports.ratp = json;
 	    });
 
 	   	$.getJSON("json/autolib.json", function(json){
-	    	memory.transports.autolib = json;
+	    	transports.autolib = json;
 	    });
 
 	});
