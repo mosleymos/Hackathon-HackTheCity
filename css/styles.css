@@ -541,12 +541,29 @@ select {
     cursor: pointer;
 }
 
+.buttonMap {
+    display: inline-block;
+    border: solid 1px #ccc;
+    width: 100px;
+    margin: 15px 6px;
+    border-radius: 15px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    font-size: 1.7em;
+    background: rgba(171, 0, 48, 0.5);
+    color: white;
+    cursor: pointer;
+}
+
+.buttonMap img{
+        height: 85px;
+}
+
 #map {
     height: 100%;
 }
 
 #floating-panel {
-    position: absolute;
     top: 10px;
     left: 25%;
     z-index: 5;

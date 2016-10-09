@@ -444,6 +444,12 @@ interface.geocode = function(data)
 	}
 }
 
+interface.date = function(posix)
+{
+	var date = new Date(posix * 1000);
+	return date;
+}
+
 interface.compose = function(data)
 {
 	var elementHtml = "";
@@ -513,15 +519,15 @@ interface.compose = function(data)
 					found = 1;
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div id=\"title\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].title + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Description</div><div id=\"description\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].description + "</div></div>";
-					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Event added on</div><div id=\"posix\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].posix + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Event added on</div><div id=\"posix\" class=\"presentDataLine-data\">" + interface.date(memory.profile.calendar[o].posix) + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start point lat</div><div id=\"origin-gps-lat\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.gps.lat + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start point lon</div><div id=\"origin-gps-lon\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.gps.lon + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Address origin</div><div id=\"origin-address\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.address + "</div></div>";
-					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start time</div><div id=\"origin-time\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.time + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start time</div><div id=\"origin-time\" class=\"presentDataLine-data\">" + interface.date(memory.profile.calendar[o].origin.time) + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End point lat</div><div id=\"destination-gps-lat\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.gps.lat + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End point lon</div><div id=\"destination-gps-lon\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.gps.lon + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Address destination</div><div id=\"destination-address\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.address + "</div></div>";
-					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End time</div><div id=\"destination-time\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.time + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End time</div><div id=\"destination-time\" class=\"presentDataLine-data\">" + interface.date(memory.profile.calendar[o].destination.time) + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'choosePreferedTravelMode'})\">Select Travel Mode for this Rendez-Vous</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'modifyRendezVous'})\">Modify this Rendez-Vous</div></div>";
 				}
@@ -561,7 +567,7 @@ interface.compose = function(data)
 					memory.selectedCalendar = memory.profile.calendar[o];
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\"><input id=\"title\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].title + "\" placeholder=\"Place Title\"/></div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Description</div><div class=\"presentDataLine-data\"><input id=\"description\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].description + "\" placeholder=\"Place Description\"/></div></div>";
-					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Event added on</div><div class=\"presentDataLine-data\"><input id=\"\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].posix + "\" placeholder=\"Place Title\"/></div></div>";
+					//elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Event added on</div><div class=\"presentDataLine-data\"><input id=\"\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].posix + "\" placeholder=\"Place Title\"/></div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start point lat</div><div class=\"presentDataLine-data\"><input id=\"origin-gps-lat\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].origin.gps.lat + "\" placeholder=\"Place Origin Latitude\"/></div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start point lon</div><div class=\"presentDataLine-data\"><input id=\"origin-gps-lon\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].origin.gps.lon + "\" placeholder=\"Place Origin Longitude\"/></div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Address origin</div><div class=\"presentDataLine-data\"><input id=\"origin-address\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].origin.address + "\" placeholder=\"Place Origin Adress\" onchange=\"interface.geocode({pos:'origin'})\"/></div></div>";
@@ -587,10 +593,13 @@ interface.compose = function(data)
 			elementHtml += interface.pageTitle({title:'Choose Prefered Travel Mode'});
 			elementHtml += "<div id=\"main-content\">";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\">" + memory.selectedCalendar.title + "</div></div>";
-				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"/img/icon-rail.png\" /></div>";
-				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"/img/icon-bus.png\" /></div>";
-				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"/img/icon-car.png\" /></div>";
-				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"/img/icon-bicycle.png\" /></div>";
+				
+				elementHtml += "<div style=\"text-align:center;\">";
+				elementHtml += "<div class=\"buttonMap\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-rail.png\" /></div>";
+				elementHtml += "<div class=\"buttonMap\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-bus.png\" /></div>";
+				elementHtml += "<div class=\"buttonMap\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-car.png\" /></div>";
+				elementHtml += "<div class=\"buttonMap\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-bicycle.png\" /></div>";
+				elementHtml += "</div>";
 				elementHtml += "<div id=\"floating-panel\">";
 			    	elementHtml += "<b>Mode of Travel: </b>";
 				    elementHtml += "<select id=\"mode\">";
