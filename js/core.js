@@ -280,11 +280,13 @@ interface.customizeData = function(data)
 
 function initMap()
 {
+	console.log(memory.selectedCalendar);
+
   var directionsDisplay = new google.maps.DirectionsRenderer;
   var directionsService = new google.maps.DirectionsService;
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 14,
-    center: {lat: 37.77, lng: -122.447}
+    center: {lat: memory.selectedCalendar.origin.gps.lat, lng: memory.selectedCalendar.origin.gps.lon}
   });
   directionsDisplay.setMap(map);
 
@@ -297,11 +299,8 @@ function initMap()
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
   var selectedMode = document.getElementById('mode').value;
   directionsService.route({
-    origin: {lat: 37.77, lng: -122.447},  // Haight.
-    destination: {lat: 37.768, lng: -122.511},  // Ocean Beach.
-    // Note that Javascript allows us to access the constant
-    // using square brackets and a string value as its
-    // "property."
+    origin: {lat: memory.selectedCalendar.origin.gps.lat, lng: memory.selectedCalendar.origin.gps.lon},  // Haight.
+    destination: {lat: memory.selectedCalendar.destination.gps.lat, lng: memory.selectedCalendar.destination.gps.lon},  // Ocean Beach.
     travelMode: google.maps.TravelMode[selectedMode]
   }, function(response, status) {
     if (status == google.maps.DirectionsStatus.OK) {
@@ -326,7 +325,7 @@ function randomString(limit)
 {
 	var List = new Array("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9");
 	var Chain ='';
-	for(i = 0; i < nbcar; i++)
+	for(i = 0; i < List; i++)
 	{
 		Chain = Chain + List[Math.floor(Math.random()*List.length)];
 	}
@@ -354,6 +353,7 @@ interface.updateCalendar = function(data)
 		result.posix = d.getTime();
 		result.id = randomString(15);
 		memory.profile.calendar.push(result);
+		memory.selectedCalendar = {id:result.id};
 	}
 	else if (data.option == "update")
 	{
@@ -377,6 +377,71 @@ interface.updateCalendar = function(data)
 	}
 	if (success == 0)
 		interface.message({msg:"The Rendez-Vous is not recorded, check your fields.", kind:"error"});
+}
+
+interface.geocodeData = {originAddress:"",originData:{},origin:0,destinationAddress:"",destinationData:{}, destination:0};
+
+interface.askGeocodeOrigin = function(data)
+{  
+	$.ajax({
+	  dataType: "json",
+	  url: data.url,
+	  success: function (data) {
+	  	console.log(data);
+        interface.geocode({option:'callback',pos:'origin', results:data.results});
+    }
+	});
+}
+
+interface.askGeocodeDestination = function(data)
+{  
+	$.ajax({
+	  dataType: "json",
+	  url: data.url,
+	  success: function (data) {
+	  	console.log(data);
+        interface.geocode({option:'callback',pos:'destination', results:data.results});
+    }
+	});
+}
+
+interface.geocode = function(data)
+{
+	if (typeof data.option == "undefined" && data.pos == "origin")
+	{
+		var originAddress = document.getElementById("origin-address").value;
+		if (originAddress != null && originAddress != "")
+		{
+			originAddress = originAddress.replace(' ','+');
+			var request = "https://maps.googleapis.com/maps/api/geocode/json?address=" + originAddress + "&key=AIzaSyCNgeHXRn0G3KTrcF9UYwJrPuU0F4i3xC0";
+			console.log(request);
+			interface.askGeocodeOrigin({url:request});
+		}
+	}
+	else if (typeof data.option == "undefined" && data.pos == "destination")
+	{
+		var destinationAddress = document.getElementById("destination-address").value;
+		if (destinationAddress != null && destinationAddress != "")
+		{
+			destinationAddress = destinationAddress.replace(' ','+');
+			var request = "https://maps.googleapis.com/maps/api/geocode/json?address=" + destinationAddress + "&key=AIzaSyCNgeHXRn0G3KTrcF9UYwJrPuU0F4i3xC0";
+			console.log(request);
+			interface.askGeocodeDestination({url:request});
+		}
+	}
+	if (typeof data.option != "undefined" && data.option == "callback")
+	{
+		if (data.pos == "origin")
+		{
+			document.getElementById("origin-gps-lat").value = data.results[0].geometry.location.lat;
+			document.getElementById("origin-gps-lon").value = data.results[0].geometry.location.lng;
+		}
+		else if (data.pos == "destination")
+		{
+			document.getElementById("destination-gps-lat").value = data.results[0].geometry.location.lat;
+			document.getElementById("destination-gps-lon").value = data.results[0].geometry.location.lng;
+		}
+	}
 }
 
 interface.compose = function(data)
@@ -451,11 +516,11 @@ interface.compose = function(data)
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Event added on</div><div id=\"posix\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].posix + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start point lat</div><div id=\"origin-gps-lat\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.gps.lat + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start point lon</div><div id=\"origin-gps-lon\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.gps.lon + "</div></div>";
-					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Adress origin</div><div id=\"origin-address\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.address + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Address origin</div><div id=\"origin-address\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.address + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start time</div><div id=\"origin-time\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].origin.time + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End point lat</div><div id=\"destination-gps-lat\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.gps.lat + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End point lon</div><div id=\"destination-gps-lon\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.gps.lon + "</div></div>";
-					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Adress destination</div><div id=\"destination-address\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.address + "</div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Address destination</div><div id=\"destination-address\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.address + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End time</div><div id=\"destination-time\" class=\"presentDataLine-data\">" + memory.profile.calendar[o].destination.time + "</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'choosePreferedTravelMode'})\">Select Travel Mode for this Rendez-Vous</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'modifyRendezVous'})\">Modify this Rendez-Vous</div></div>";
@@ -471,14 +536,14 @@ interface.compose = function(data)
 			elementHtml += "<div id=\"main-content\">";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\"><input id=\"title\" class=\"inputClassic\" value=\"\" placeholder=\"Place Title\"/></div></div>";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Description</div><div class=\"presentDataLine-data\"><input id=\"description\" class=\"inputClassic\" value=\"\" placeholder=\"Place Description\"/></div></div>";
-				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Event added on</div><div class=\"presentDataLine-data\"><input class=\"inputClassic\" value=\"\" placeholder=\"Place Title\"/></div></div>";
+				//elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Event added on</div><div class=\"presentDataLine-data\"><input class=\"inputClassic\" value=\"\" placeholder=\"Place Title\"/></div></div>";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start point lat</div><div class=\"presentDataLine-data\"><input id=\"origin-gps-lat\" class=\"inputClassic\" value=\"\" placeholder=\"Place Origin Latitude\"/></div></div>";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start point lon</div><div class=\"presentDataLine-data\"><input id=\"origin-gps-lon\" class=\"inputClassic\" value=\"\" placeholder=\"Place Origin Longitude\"/></div></div>";
-				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Adress origin</div><div class=\"presentDataLine-data\"><input id=\"origin-address\" class=\"inputClassic\" value=\"\" placeholder=\"Place Origin Adress\"/></div></div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Address origin</div><div class=\"presentDataLine-data\"><input id=\"origin-address\" class=\"inputClassic\" value=\"\" placeholder=\"Place Origin Adress\" onchange=\"interface.geocode({pos:'origin'})\"/></div></div>";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start time</div><div class=\"presentDataLine-data\"><input id=\"origin-time\" class=\"inputClassic\" value=\"\" placeholder=\"Place Start Time\"/></div></div>";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End point lat</div><div class=\"presentDataLine-data\"><input id=\"destination-gps-lat\" class=\"inputClassic\" value=\"\" placeholder=\"Place Destination Latitude\"/></div></div>";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End point lon</div><div class=\"presentDataLine-data\"><input id=\"destination-gps-lon\" class=\"inputClassic\" value=\"\" placeholder=\"Place Destination Longitude\"/></div></div>";
-				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Adress destination</div><div class=\"presentDataLine-data\"><input id=\"destination-address\" class=\"inputClassic\" value=\"\" placeholder=\"Place Destination Address\"/></div></div>";
+				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Address destination</div><div class=\"presentDataLine-data\"><input id=\"destination-address\" class=\"inputClassic\" value=\"\" placeholder=\"Place Destination Address\" onchange=\"interface.geocode({pos:'destination'})\"/></div></div>";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End time</div><div class=\"presentDataLine-data\"><input id=\"destination-time\" class=\"inputClassic\" value=\"\" placeholder=\"Place Destination Arrival Time\"/></div></div>";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"buttonClassic\" onclick=\"interface.updateCalendar({option:'add'})\">Create this Rendez-Vous</div></div>";
 			elementHtml += "</div>";
@@ -499,11 +564,11 @@ interface.compose = function(data)
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Event added on</div><div class=\"presentDataLine-data\"><input id=\"\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].posix + "\" placeholder=\"Place Title\"/></div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start point lat</div><div class=\"presentDataLine-data\"><input id=\"origin-gps-lat\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].origin.gps.lat + "\" placeholder=\"Place Origin Latitude\"/></div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start point lon</div><div class=\"presentDataLine-data\"><input id=\"origin-gps-lon\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].origin.gps.lon + "\" placeholder=\"Place Origin Longitude\"/></div></div>";
-					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Adress origin</div><div class=\"presentDataLine-data\"><input id=\"origin-address\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].origin.address + "\" placeholder=\"Place Origin Adress\"/></div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Address origin</div><div class=\"presentDataLine-data\"><input id=\"origin-address\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].origin.address + "\" placeholder=\"Place Origin Adress\" onchange=\"interface.geocode({pos:'origin'})\"/></div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Start time</div><div class=\"presentDataLine-data\"><input id=\"origin-time\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].origin.time + "\" placeholder=\"Place Start Time\"/></div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End point lat</div><div class=\"presentDataLine-data\"><input id=\"destination-gps-lat\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].destination.gps.lat + "\" placeholder=\"Place Destination Latitude\"/></div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End point lon</div><div class=\"presentDataLine-data\"><input id=\"destination-gps-lon\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].destination.gps.lon + "\" placeholder=\"Place Destination Longitude\"/></div></div>";
-					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Adress destination</div><div class=\"presentDataLine-data\"><input id=\"destination-address\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].destination.address + "\" placeholder=\"Place Destination Arrival Time\"/></div></div>";
+					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Address destination</div><div class=\"presentDataLine-data\"><input id=\"destination-address\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].destination.address + "\" placeholder=\"Place Destination Arrival Time\" onchange=\"interface.geocode({pos:'destination'})\"/></div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">End time</div><div class=\"presentDataLine-data\"><input id=\"destination-time\" class=\"inputClassic\" value=\"" + memory.profile.calendar[o].destination.time + "\"</div></div>";
 					elementHtml += "<div class=\"presentDataLine\"><div class=\"buttonClassic\" onclick=\"interface.updateCalendar({option:'update',posix:"+memory.profile.calendar[o].posix+",id:'"+memory.profile.calendar[o].id+"'})\">Update this Rendez-Vous</div></div>";
 				}
