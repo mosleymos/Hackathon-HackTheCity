@@ -587,10 +587,10 @@ interface.compose = function(data)
 			elementHtml += interface.pageTitle({title:'Choose Prefered Travel Mode'});
 			elementHtml += "<div id=\"main-content\">";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\">" + memory.selectedCalendar.title + "</div></div>";
-				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-rail\" /></div>";
-				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-bus\" /></div>";
-				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-car\" /></div>";
-				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"img/icon-bicycle\" /></div>";
+				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"/img/icon-rail.png\" /></div>";
+				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"/img/icon-bus.png\" /></div>";
+				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"/img/icon-car.png\" /></div>";
+				elementHtml += "<div class=\"buttonClassic\" onclick=\"interface.navigate({'page':'result'})\"><img src=\"/img/icon-bicycle.png\" /></div>";
 				elementHtml += "<div id=\"floating-panel\">";
 			    	elementHtml += "<b>Mode of Travel: </b>";
 				    elementHtml += "<select id=\"mode\">";
