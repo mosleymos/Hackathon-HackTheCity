@@ -676,8 +676,8 @@ interface.compose = function(data)
 				}
 				elementHtml += "</div>";
 
-				elementHtml += "<div>You have selected the " + endProcess.transport + " to arrive at destination.</div>";
-				elementHtml += "<div>The cost is of : " + endProcess.cost + "&euro; (euros)</div>";
+				elementHtml += "<div style=\"font-style:italic;\">You have selected the " + endProcess.transport + " to arrive at destination.</div>";
+				elementHtml += "<div style=\"font-size: 2.3em;\">The cost is of : " + endProcess.cost + "&euro; (euros)</div>";
 				elementHtml += "<div onclick=\"interface.navigate({'page':'paymentok'})\">Ok to approuve payment or Cancel the current operation</div>";
 			
 				
