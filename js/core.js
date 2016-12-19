@@ -1,3 +1,4 @@
+
 var interface = {};
 
 interface.wildcard = 0;
@@ -146,91 +147,6 @@ function TextAbstract(text, length)
 interface.productsDisplay = function(data)
 {
 	var productsList = [];
-
-
-	
-
-	//for (var i = 0; interface.data.profile.lists[i]; i++)
-	//{
-		/*
-		for (var z = 0; interface.json.productDescription[z]; z++)
-		{
-			if (interface.productsDisplayCheckDouble(interface.json.productDescription[z], productsList) == 0)
-			{
-				var probabilityRGBATransparency = interface.json.productDescription[z].QANTITY_x / 100;
-				interface.json.productDescription[z].probabilityRGBA = "rgba(" + interface.data.profile.probabilityColor.r + "," + interface.data.profile.probabilityColor.g + "," + interface.data.profile.probabilityColor.b + "," + probabilityRGBATransparency + ")";
-				productsList.push(interface.json.productDescription[z]);
-			}
-		}
-		
-
-		interface.json.productDescription = productsList;
-
-console.log(productsList);
-		
-	//}
-	productsList.sort(function (a, b){
-	    if (a.QANTITY_x < b.QANTITY_x)
-	      return 1;
-	    if (a.QANTITY_x > b.QANTITY_x)
-	      return -1;
-	    return 0;
-	});
-
-	var productsListHtml = "";
-	var checkShortcuts = 0;
-	var total = 0;
-	var productsListSaved = [];
-	var overloadedAmountTotal = 0;
-
-	if (interface.customozationData.autorizedCostLimit == 0)
-		productsListHtml += "<div class=\"home-titre\">Je les veux...</div>";
-
-	for (var j = 0; productsList[j]; j++)
-	{
-		if (interface.data.profile.costLimitList <= total && overloadedAmountTotal == 0)
-		{
-			productsListHtml += "<div class=\"red-line-out-of-money\"></div>";
-			overloadedAmountTotal = 1;
-		}
-		if (productsList[j].QANTITY_x >= interface.data.profile.probabilityLimit && overloadedAmountTotal == 0)
-		{
-			total = total + productsList[j].SAL_AMT_WTAX;
-			var inputCheckBox = "<input type=\"checkbox\" name=\"product\" value=\"" + productsList[j].HYP_UB_DESC + "\" checked>";
-			productsListSaved.push(productsList[j]);
-		}
-		else
-		{
-			if (checkShortcuts == 0)
-			{
-				if (interface.customozationData.autorizedCostLimit == 1)
-					productsListHtml += interface.shortcuts({productsToShop:productsListSaved, totalEstimated:total});
-				else
-				{
-					productsListHtml += "<div class=\"home-middle\"><img src=\"img/plus.png\"><img src=\"img/technology.png\"></div>";
-					productsListHtml += "<div class=\"home-titre\">Besoin d'inspiration ?</div>";
-				}
-			}
-			checkShortcuts = checkShortcuts + 1;
-			var inputCheckBox = "<input type=\"checkbox\" name=\"product\" value=\"" + productsList[j].HYP_UB_DESC + "\">";
-		}
-		if (interface.customozationData.autorizedCostLimit == 1)
-			var price = "<div class=\"product-price\">" + productsList[j].SAL_AMT_WTAX + "€</div>";
-		else
-			var price = "";
-		if (interface.customozationData.autorizedColors == 1)
-			productsListHtml += "<div class=\"product-line\" style=\"background:" + productsList[j].probabilityRGBA + "\"><div class=\"product-checkbox\">" + inputCheckBox + "</div><div class=\"product-name\">" + TextAbstract(productsList[j].HYP_UB_DESC, 22) + "</div>" + price + "</div>";
-		else
-			productsListHtml += "<div class=\"product-line\"><div class=\"product-checkbox\">" + inputCheckBox + "</div><div class=\"product-name\">" + TextAbstract(productsList[j].HYP_UB_DESC, 22) + "</div>" + price + "</div>";
-	}
-	if (checkShortcuts == 0)
-		productsListHtml += interface.shortcuts();
-	if (productsList.length == 0)
-		productsListHtml += "No data to analyze yet, add a product !";
-	if (interface.customozationData.autorizedCostLimit == 0)
-		productsListHtml += "<br><br><br><div class=\"home-go\" onclick=\"interface.navigate({'page':'page-demo'})\">Go get it !</div>";
-	return productsListHtml;
-*/
 }
 
 interface.customozationData = {
