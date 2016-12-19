@@ -1,6 +1,6 @@
-var log = function(something){ 
-  console.log(something); 
-  return 'Log info'; 
+var log = function(something){
+  console.log(something);
+  return 'Log info';
 }
 
 var interface = {};
@@ -14,6 +14,10 @@ interface.info.currentPage = "home";
 
 interface.info.processStorage = {};
 
+interface.info.menuOpened = 0;
+interface.info.menuOperating = 0;
+
+// Process HTML
 interface.process = function(data)
 {
 
@@ -36,16 +40,26 @@ interface.process = function(data)
 
 		for (var i = 0; interface.info.processStorage.productsToShop[i]; i++)
 		{
-			processHtml += "<div class=\"process-cart-line\">#" + i + "<div class=\"process-cart-line-name\">" + interface.info.processStorage.productsToShop[i].HYP_UB_DESC + "</div><div class=\"process-cart-line-price\">" + interface.info.processStorage.productsToShop[i].SAL_AMT_WTAX.toFixed(2) + "€</div></div>";
+			processHtml += [
+        "<div class=\"process-cart-line\">#",i,
+        "<div class=\"process-cart-line-name\">",
+        interface.info.processStorage.productsToShop[i].HYP_UB_DESC,
+        "</div><div class=\"process-cart-line-price\">",
+        interface.info.processStorage.productsToShop[i].SAL_AMT_WTAX.toFixed(2),
+        "€</div></div>"
+      ].join('');
 		}
 
     processHtml += [
       "</div>","<div id=\"process-greetings\">","Thank you to choose Carrefour","</div>" ].join('');
 
 	  document.getElementById('mainView').innerHTML = processHtml;
+
+    return processHtml
 }
 
-interface.shortcuts = function(data)
+// Process Shortcuts
+interface.shortcuts = function interfaceShortcuts(data)
 {
 	var shortcuts = "<div id=\"shortcuts\">";
 		if (typeof data !== "undefined" && data.totalEstimated !== "undefined")
@@ -62,8 +76,14 @@ interface.shortcuts = function(data)
 					var estimatedAcceptable = "shortcuts-unacceptable";
 					shortcuts += "<div class=\"shortcuts-unacceptable-estimation\">Le montant estimé de cette liste d'achats dépasse la limite que vous avez fixé</div>";
 				}
-				shortcuts += "<div class=\"shortcut-total-estimated-text\">Cout Total Estimé</div><div class=\"shortcut-total-estimated-price\"><div class=\"" + estimatedAcceptable + "\">" + data.totalEstimated.toFixed(2) + "€</div></div>";
-			shortcuts += "</div>";
+        shortcuts += [
+          "<div class=\"shortcut-total-estimated-text\">Cout Total Estimé</div><div class=\"shortcut-total-estimated-price\"><div class=\"",
+          estimatedAcceptable,
+          "\">",
+          data.totalEstimated.toFixed(2),
+          "€</div></div>",
+          "</div>"
+        ].join('');
 		}
     shortcuts += [
       "<img onclick=\"interface.process({method:'My Local Carrefour Store', img:'img/icon1.png'})\" class=\"shortcut\" src=\"img/icon1.png\" />",
@@ -75,20 +95,23 @@ interface.shortcuts = function(data)
 	return shortcuts;
 }
 
-interface.navigate = function(data)
+
+// Process navigate
+interface.navigate = function interfaceNavigate(data)
 {
 	if (interface.info.menuOpened == 1)
 		interface.menu();
-	interface.info.currentPage = data.page;
+  interface.info.currentPage = data.page;
 	interface.render();
 }
 
-interface.pageTitle = function(data)
+// Process pageTitle
+interface.pageTitle = function interfacePageTitle(data)
 {
-	var pageTitle = null;
+	var pageTitle = '';
 	if (interface.customozationData.autorizedColors == 1)
 	{
-    pageTitle =[
+    pageTitle = [
       "<div id=\"page-title\">",
       "<div id=\"page-title-name\"> > " + data.title + "</div>",
       "<div id=\"page-title-user\"></div>",
@@ -100,9 +123,8 @@ interface.pageTitle = function(data)
 	return pageTitle;
 }
 
-interface.info.menuOpened = 0;
-interface.info.menuOperating = 0;
 
+// Process Menu
 interface.menu = function()
 {
 	if (interface.info.menuOpened == 0 && interface.info.menuOperating == 0)
@@ -126,6 +148,7 @@ interface.menu = function()
 	}
 }
 
+// Process products Display Check double
 interface.productsDisplayCheckDouble = function(product, productList)
 {
 	var double = 0;
@@ -139,6 +162,7 @@ interface.productsDisplayCheckDouble = function(product, productList)
 	}
 	return double;
 }
+
 
 function TextAbstract(text, length)
 {
@@ -309,7 +333,7 @@ interface.updateCalendar = function(data)
 interface.geocodeData = {originAddress:"",originData:{},origin:0,destinationAddress:"",destinationData:{}, destination:0};
 
 interface.askGeocodeOrigin = function(data)
-{  
+{
 	$.ajax({
 	  dataType: "json",
 	  url: data.url,
@@ -321,7 +345,7 @@ interface.askGeocodeOrigin = function(data)
 }
 
 interface.askGeocodeDestination = function(data)
-{  
+{
 	$.ajax({
 	  dataType: "json",
 	  url: data.url,
@@ -530,7 +554,7 @@ interface.compose = function(data)
 			elementHtml += interface.pageTitle({title:'Choose Prefered Travel Mode'});
 			elementHtml += "<div id=\"main-content\">";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\">" + memory.selectedCalendar.title + "</div></div>";
-				
+
 				elementHtml += "<div style=\"text-align:center;\">";
 				elementHtml += "<div class=\"buttonMap\" onclick=\"interface.endProcess({'transport':'rail'})\"><img src=\"img/icon-rail.png\" /></div>";
 				elementHtml += "<div class=\"buttonMap\" onclick=\"interface.endProcess({'transport':'bus'})\"><img src=\"img/icon-bus.png\" /></div>";
@@ -561,7 +585,7 @@ interface.compose = function(data)
 			elementHtml += interface.pageTitle({title:'Choose Prefered Travel Mode'});
 			elementHtml += "<div id=\"main-content\">";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\">" + memory.selectedCalendar.title + "</div></div>";
-				
+
 				elementHtml += "<div style=\"text-align:center;\">";
 					elementHtml += "<div class=\"paymentok\">Your Payment has been accepted, thank you.</div>";
 				elementHtml += "</div>";
@@ -573,7 +597,7 @@ interface.compose = function(data)
 			elementHtml += interface.pageTitle({title:'We have found a way...'});
 			elementHtml += "<div id=\"main-content\">";
 				elementHtml += "<div class=\"presentDataLine\"><div class=\"presentDataLine-text\">Title</div><div class=\"presentDataLine-data\">" + memory.selectedCalendar.title + "</div></div>";
-			
+
 				elementHtml += "<div style=\"text-align:center;\">";
 				if (endProcess.transport == "rail")
 				{
@@ -606,8 +630,8 @@ interface.compose = function(data)
 				elementHtml += "<div style=\"font-style:italic;\">You have selected the " + endProcess.transport + " to arrive at destination.</div>";
 				elementHtml += "<div style=\"font-size: 2.3em;\">The cost is of : " + endProcess.cost + "&euro; (euros)</div>";
 				elementHtml += "<div onclick=\"interface.navigate({'page':'paymentok'})\">Ok to approuve payment or Cancel the current operation</div>";
-			
-				
+
+
 				if (typeof res != "undefined")
 				{
 					log(res);
@@ -832,7 +856,7 @@ interface.transports.recordPosition = function(position)
     interface.transports.myGps.lon = position.coords.longitude;
 }
 
-function toRad(Value) 
+function toRad(Value)
 {
    return Value * Math.PI / 180;
 }
@@ -846,8 +870,8 @@ interface.transports.distanceBetweenTwoPoints = function(pointOne,pointTwo)
   	var lat2 = toRad(pointTwo.lat);
 
   	var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
-  	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+  	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   	var d = R * c;
   	return d;
 }
@@ -983,7 +1007,7 @@ interface.construct = function()
 	$.getJSON("json/formatType.json", function(json){
     	memory = json;
     	log(memory);
-	
+
 
 		var menu = document.createElement("div");
 		menu.id = "menu";
@@ -1038,7 +1062,7 @@ interface.json = {};
 interface.ask = function(data)
 {
 	var url = "https://mysmartlist.fr/index.php?json";
-    
+
     $.ajax({
         type:'POST',
         url:url,
