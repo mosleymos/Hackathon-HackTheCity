@@ -1,3 +1,7 @@
+var log = function(something){ 
+  console.log(something); 
+  return 'Log info'; 
+}
 
 var interface = {};
 
@@ -12,36 +16,38 @@ interface.info.processStorage = {};
 
 interface.process = function(data)
 {
-	var processHtml = "";
-		processHtml += "<div id=\"process-recall\">";
-			processHtml += "<img id=\"process-miniature\" src=\"" + data.img + "\" />";
-			processHtml += "<div id=\"process-recall-method\">";
-				processHtml += "You have choosen this method to own your products : " + data.method + "";
-			processHtml += "</div>";
-			processHtml += "<div id=\"process-recall-total-price\">";
-				processHtml += "You are about to pay " + interface.info.processStorage.totalEstimated.toFixed(2) + "€";
-			processHtml += "</div>";
-		processHtml += "</div>";
-		processHtml += "<div id=\"process-confirm\">";
-			processHtml += "Accept Transaction and go to the online paiement system (you accept the terms and conditions)";
-		processHtml += "</div>";
-		processHtml += "<div id=\"process-cart\">";
-			processHtml += "<div id=\"process-cart-title\">Products in your cart</div>";
+
+	var processHtml = [
+      "<div id=\"process-recall\">",
+      "<img id=\"process-miniature\" src=\"" + data.img + "\" />",
+			"<div id=\"process-recall-method\">",
+			"You have choosen this method to own your products : " + data.method + "",
+			"</div>",
+			"<div id=\"process-recall-total-price\">",
+			"You are about to pay " + interface.info.processStorage.totalEstimated.toFixed(2) + "€",
+			"</div>",
+		  "</div>",
+		  "<div id=\"process-confirm\">",
+			"Accept Transaction and go to the online paiement system (you accept the terms and conditions)",
+		 "</div>",
+		 "<div id=\"process-cart\">",
+		 "<div id=\"process-cart-title\">Products in your cart</div>"
+    ].join('')
+
 		for (var i = 0; interface.info.processStorage.productsToShop[i]; i++)
 		{
 			processHtml += "<div class=\"process-cart-line\">#" + i + "<div class=\"process-cart-line-name\">" + interface.info.processStorage.productsToShop[i].HYP_UB_DESC + "</div><div class=\"process-cart-line-price\">" + interface.info.processStorage.productsToShop[i].SAL_AMT_WTAX.toFixed(2) + "€</div></div>";
 		}
-		processHtml += "</div>";
-		processHtml += "<div id=\"process-greetings\">";
-			processHtml += "Thank you to choose Carrefour";
-		processHtml += "</div>";
-	document.getElementById('mainView').innerHTML = processHtml;
+
+    processHtml += [
+      "</div>","<div id=\"process-greetings\">","Thank you to choose Carrefour","</div>" ].join('');
+
+	  document.getElementById('mainView').innerHTML = processHtml;
 }
 
 interface.shortcuts = function(data)
 {
-	var shortcuts = "";
-	shortcuts += "<div id=\"shortcuts\">";
+	var shortcuts = "<div id=\"shortcuts\">";
 		if (typeof data !== "undefined" && data.totalEstimated !== "undefined")
 		{
 			interface.info.processStorage = data;
@@ -59,10 +65,13 @@ interface.shortcuts = function(data)
 				shortcuts += "<div class=\"shortcut-total-estimated-text\">Cout Total Estimé</div><div class=\"shortcut-total-estimated-price\"><div class=\"" + estimatedAcceptable + "\">" + data.totalEstimated.toFixed(2) + "€</div></div>";
 			shortcuts += "</div>";
 		}
-		shortcuts += "<img onclick=\"interface.process({method:'My Local Carrefour Store', img:'img/icon1.png'})\" class=\"shortcut\" src=\"img/icon1.png\" />";
-		shortcuts += "<img onclick=\"interface.process({method:'The Carrefour Drive', img:'img/icon2.png'})\" class=\"shortcut\" src=\"img/icon2.png\" />";
-		shortcuts += "<img onclick=\"interface.process({method:'The Carrefour Ooshop Delivery', img:'img/icon3.png'})\" class=\"shortcut\" src=\"img/icon3.png\" />";
-	shortcuts += "</div>";
+    shortcuts += [
+      "<img onclick=\"interface.process({method:'My Local Carrefour Store', img:'img/icon1.png'})\" class=\"shortcut\" src=\"img/icon1.png\" />",
+      "<img onclick=\"interface.process({method:'The Carrefour Drive', img:'img/icon2.png'})\" class=\"shortcut\" src=\"img/icon2.png\" />",
+      "<img onclick=\"interface.process({method:'The Carrefour Ooshop Delivery', img:'img/icon3.png'})\" class=\"shortcut\" src=\"img/icon3.png\" />",
+      "</div>"
+    ].join('')
+
 	return shortcuts;
 }
 
@@ -76,14 +85,16 @@ interface.navigate = function(data)
 
 interface.pageTitle = function(data)
 {
-	var pageTitle = "";
+	var pageTitle = null;
 	if (interface.customozationData.autorizedColors == 1)
 	{
-		pageTitle += "<div id=\"page-title\">";
-			pageTitle += "<div id=\"page-title-name\"> > " + data.title + "</div>";
-			pageTitle += "<div id=\"page-title-user\"></div>";
-		pageTitle += "</div>";
-		
+    pageTitle =[
+      "<div id=\"page-title\">",
+      "<div id=\"page-title-name\"> > " + data.title + "</div>",
+      "<div id=\"page-title-user\"></div>",
+      "</div>",
+    ].join('')
+
 	}
 	pageTitle += "<div id=\"displayMessage\"></div>";
 	return pageTitle;
@@ -196,7 +207,7 @@ interface.customizeData = function(data)
 
 function initMap()
 {
-	console.log(memory.selectedCalendar);
+	log(memory.selectedCalendar);
 
   var directionsDisplay = new google.maps.DirectionsRenderer;
   var directionsService = new google.maps.DirectionsService;
@@ -303,7 +314,7 @@ interface.askGeocodeOrigin = function(data)
 	  dataType: "json",
 	  url: data.url,
 	  success: function (data) {
-	  	console.log(data);
+	  	log(data);
         interface.geocode({option:'callback',pos:'origin', results:data.results});
     }
 	});
@@ -315,7 +326,7 @@ interface.askGeocodeDestination = function(data)
 	  dataType: "json",
 	  url: data.url,
 	  success: function (data) {
-	  	console.log(data);
+	  	log(data);
         interface.geocode({option:'callback',pos:'destination', results:data.results});
     }
 	});
@@ -330,7 +341,7 @@ interface.geocode = function(data)
 		{
 			originAddress = originAddress.replace(' ','+');
 			var request = "https://maps.googleapis.com/maps/api/geocode/json?address=" + originAddress + "&key=AIzaSyCNgeHXRn0G3KTrcF9UYwJrPuU0F4i3xC0";
-			console.log(request);
+			log(request);
 			interface.askGeocodeOrigin({url:request});
 		}
 	}
@@ -341,7 +352,7 @@ interface.geocode = function(data)
 		{
 			destinationAddress = destinationAddress.replace(' ','+');
 			var request = "https://maps.googleapis.com/maps/api/geocode/json?address=" + destinationAddress + "&key=AIzaSyCNgeHXRn0G3KTrcF9UYwJrPuU0F4i3xC0";
-			console.log(request);
+			log(request);
 			interface.askGeocodeDestination({url:request});
 		}
 	}
@@ -599,7 +610,7 @@ interface.compose = function(data)
 				
 				if (typeof res != "undefined")
 				{
-					console.log(res);
+					log(res);
 					for (var k = 0; res[k]; k++)
 					{
 						elementHtml += "<div class=\"line-possibilities\">";
@@ -843,7 +854,7 @@ interface.transports.distanceBetweenTwoPoints = function(pointOne,pointTwo)
 
 interface.transports.triage = function(list, order)
 {
-	console.log(list);
+	log(list);
 
 	list.sort(function (a, b){
 	    if (a.lat < b.lat)
@@ -861,7 +872,7 @@ interface.transports.triage = function(list, order)
 	});
 	return list;
 
-	console.log('after',list);
+	log('after',list);
 }
 
 interface.transports.nearestPointFromMe = function(limit)
@@ -971,7 +982,7 @@ interface.construct = function()
 
 	$.getJSON("json/formatType.json", function(json){
     	memory = json;
-    	console.log(memory);
+    	log(memory);
 	
 
 		var menu = document.createElement("div");
@@ -1034,9 +1045,9 @@ interface.ask = function(data)
         dataType:'html',
         data:data
     }).done(function(html){
-        console.log("response is : " + html);
+        log("response is : " + html);
         interface.json = JSON.parse(html);
- 		console.log(interface.json);
+ 		log(interface.json);
  		interface.construct();
     });
 }
